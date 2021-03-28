@@ -25,9 +25,14 @@ svg {
 <body>
 <script src="d3js.org/d3.v3.min.js"></script>
 <script>
-var n = 200,
-    array = d3.shuffle(d3.range(n))
-    arrays = mergesort(array.slice());
+var n = 5,
+    array = d3.range(n)
+    arrays = [array.slice()],
+    n = array.length;
+    swap(1, 2, array);
+    arrays.push(array.slice());
+    swap(2, 1, array);
+    arrays.push(array.slice());
 
 var margin = {top: 6, right: 30, bottom: 6, left: 30},
     width = 960 - margin.left - margin.right,
@@ -57,24 +62,12 @@ svg.append("g")
     .attr("transform", function(d, i) { return "translate(" + x(i) + "," + height + ")rotate(" + a(d) + ")"; })
     .attr("y2", -height);
 
-function mergesort(array){
-    var arrays = [array.slice()],
-      n = array.length,
-      array0 = array,
-      array1 = new Array(n);
-      swap(i, Math.min(i + m, n), Math.min(i + (m << 1), n));
-      arrays.push(array1.slice());
-      array = array0, array0 = array1, array1 = array;
-  }
-
-  function swap(left, right, end) {
-    for (var i0 = left, i1 = right, j = left; j < end; ++j) {
-      array1[j] = array0[i0 < right && (i1 >= end || array0[i0] <= array0[i1]) ? i0++ : i1++];
-    }
-  }
-
-  return arrays;
+function swap(i, j, array) {
+  temp = array[i]
+  array[i] = array[j]
+  array[j] = temp
 }
+
 
 d3.select(self.frameElement).style("height", (height + margin.top + margin.bottom) * arrays.length + 20 + "px");
 
