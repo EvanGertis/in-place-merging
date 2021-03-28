@@ -22,19 +22,14 @@ var animation = {
     duration: 400,
     pauseDuration: 400
 };
-// simple data to visualize
-var Datum = (function () {
-    function Datum() {
-    }
-    return Datum;
-})();
+
 var data = [
-    { value: 4, range: 1, angle: 90, color: '#377eb8', width: 1 },
-    { value: 4, range: 1, angle: 90, color: '#4daf4a', width: 1 },
-    { value: 4, range: 1, angle: 90, color: '#ff7f00', width: 1 },
-    { value: 4, range: 1, angle: 90, color: '#e41a1c', width: 1 },
-    { value: 4, range: 1, angle: 90, color: '#984ea3', width: 1 },
-    { value: 4, range: 1, angle: 90, color: '#f781bf', width: 1 }
+    { value: 4, range: 1, angle: 0, color: '#377eb8', width: 1, label: "node 1" },
+    { value: 4, range: 1, angle: 0, color: '#4daf4a', width: 1, label: "node 2" },
+    { value: 4, range: 1, angle: 0, color: '#ff7f00', width: 1, label: "node 3" },
+    { value: 4, range: 1, angle: 0, color: '#e41a1c', width: 1, label: "node 4" },
+    { value: 4, range: 1, angle: 0, color: '#984ea3', width: 1, label: "node 5" },
+    { value: 4, range: 1, angle: 0, color: '#f781bf', width: 1, label: "node 6" }
 ];
 // apply settings for the rectangles
 // lose type safety and code completion here because Selection and Transition are incompatible (grrr!)
@@ -43,15 +38,29 @@ function render(selection) {
     .attr('width', function (d, i) { return d.width * bar.width; })
     .attr('height', function (d, i) { return d.range * bar.height; })
     .attr('fill', function (d, i) { return d.color; })
-    .attr('transform', function (d, i) { return 'translate(' + [chart.margins.x + i * (bar.width + bar.spacing), -chart.margins.y + chart.height - d.value * bar.height] + ') ' + 'rotate(' + [(d.angle)] + ')' + 'translate(' + [-bar.width / 2, -d.range / 2] + ')'; });
+    .attr('transform', function (d, i) { return 'translate(' + [chart.margins.x + i * (bar.width + bar.spacing), -chart.margins.y + chart.height - d.value * bar.height] + ') ' + 'rotate(' + [(d.angle)] + ')' + 'translate(' + [-bar.width / 2, -d.range / 2] + ')'; })
 }
+
+function addText(selection){
+  selection
+  .text(function(d,i){
+    return d.label;
+  })
+  .attr('font-size',8)
+  .attr("dx",function(d,i){return d.width * bar.width-0.75*bar.width;})
+  .attr("dy",function(d,i){return d.range * bar.height+0.10*bar.height;})
+  .attr('transform', function (d, i) { return 'translate(' + [chart.margins.x + i * (bar.width + bar.spacing), -chart.margins.y + chart.height - d.value * bar.height] + ') ' + 'rotate(' + [(d.angle)] + ')' + 'translate(' + [-bar.width / 2, -d.range / 2] + ')'; });
+}
+
 window.onload = function () {
     // make the svg
     var svg = d3.select('#content').append('svg');
     svg.attr('width', chart.width).attr('height', chart.height).style('background', 'white');
     // initialize rectangles
     var rects = svg.selectAll('rect').data(data).enter().append('rect');
+    var texts = svg.selectAll('text').data(data).enter().append('text');
     render(rects);
+    addText(texts);
     // start timer
     i=0;
     j=1;
@@ -59,38 +68,20 @@ window.onload = function () {
         data = swap(i,j,data);
         // apply the data to the rectangles
         var rects = svg.selectAll('rect').data(data);
+        var texts = svg.selectAll('text').data(data)
         // create rectangles that were added
         render(rects.enter().append('rect'));
+        addText(texts.enter().append('text'));
         // update rectangles that changed
         render(rects.transition().duration(animation.duration));
+        addText(texts.transition().duration(animation.duration))
         // remove deleted rectangles
         rects.exit().remove();
-        i=(i+1)%data.length;
-        j=(j+1)%data.length;
+        texts.exit().remove();
+        i=(i+1)%2;
+        j=(j+1)%2;
     }, animation.duration + animation.pauseDuration);
 };
-
-var n = 5,
-array = d3.range(n)
-arrays = [array.slice()],
-n = array.length;
-var i=0, j=n-1;
-while(i <= n-1 && j >= 0){
-  swap(i, j, array);
-  arrays.push(array.slice());
-  i++;
-  j--;
-}
-
-const svg = d3.create('svg').attr('viewBox',[0,0,200,200]);
-
-svg.append("circle")
-.attr('c','50%')
-.attr('cy','50%')
-.attr('r',20)
-.style('fill','green');
-
-svg.node();
 
 function swap(i, j, array) {
   temp = array[i]
