@@ -5,19 +5,18 @@
 </body>
 <script src="d3js.org/d3.v3.min.js"></script>
 <script>
-/// <reference path="Scripts/typings/d3/d3.d.ts" />
-// javascript style declarations:
 var chart = {
     width: 960,
     height: 500,
     margins: { x: 300, y: 50 }
 };
+
 var bar = {
     width: 55,
     height: 65,
     spacing: 20
 };
-// animation properties
+
 var animation = {
     duration: 400,
     pauseDuration: 400
@@ -31,8 +30,7 @@ var data = [
     { value: 4, range: 1, angle: 0, color: '#984ea3', width: 1, label: "node 5" },
     { value: 4, range: 1, angle: 0, color: '#f781bf', width: 1, label: "node 6" }
 ];
-// apply settings for the rectangles
-// lose type safety and code completion here because Selection and Transition are incompatible (grrr!)
+
 function render(selection) {
     selection
     .attr('width', function (d, i) { return d.width * bar.width; })
@@ -74,9 +72,11 @@ window.onload = function () {
         addText(texts.enter().append('text'));
         // update rectangles that changed
         render(rects.transition().duration(animation.duration));
+        // update text boxes that changed
         addText(texts.transition().duration(animation.duration))
         // remove deleted rectangles
         rects.exit().remove();
+        // remove deleted text boxes
         texts.exit().remove();
         i=(i+1)%2;
         j=(j+1)%2;
