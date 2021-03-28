@@ -29,17 +29,21 @@ var Datum = (function () {
     return Datum;
 })();
 var data = [
-    { value: 4, range: 1, angle: 45, color: '#377eb8', width: 1 },
-    { value: 4, range: 1, angle: 45, color: '#4daf4a', width: 0.6 },
-    { value: 4, range: 1, angle: 45, color: '#ff7f00', width: 0.8 },
-    { value: 4, range: 1, angle: 45, color: '#e41a1c', width: 0.4 },
-    { value: 4, range: 1, angle: 45, color: '#984ea3', width: 0.9 },
-    { value: 4, range: 1, angle: 45, color: '#f781bf', width: 0.7 }
+    { value: 4, range: 1, angle: 90, color: '#377eb8', width: 1 },
+    { value: 4, range: 1, angle: 90, color: '#4daf4a', width: 1 },
+    { value: 4, range: 1, angle: 90, color: '#ff7f00', width: 1 },
+    { value: 4, range: 1, angle: 90, color: '#e41a1c', width: 1 },
+    { value: 4, range: 1, angle: 90, color: '#984ea3', width: 1 },
+    { value: 4, range: 1, angle: 90, color: '#f781bf', width: 1 }
 ];
 // apply settings for the rectangles
 // lose type safety and code completion here because Selection and Transition are incompatible (grrr!)
 function render(selection) {
-    selection.attr('width', function (d, i) { return d.width * bar.width; }).attr('height', function (d, i) { return d.range * bar.height; }).attr('fill', function (d, i) { return d.color; }).attr('transform', function (d, i) { return 'translate(' + [chart.margins.x + i * (bar.width + bar.spacing), -chart.margins.y + chart.height - d.value * bar.height] + ') ' + 'rotate(' + [(d.angle)] + ')' + 'translate(' + [-bar.width / 2, -d.range / 2] + ')'; });
+    selection
+    .attr('width', function (d, i) { return d.width * bar.width; })
+    .attr('height', function (d, i) { return d.range * bar.height; })
+    .attr('fill', function (d, i) { return d.color; })
+    .attr('transform', function (d, i) { return 'translate(' + [chart.margins.x + i * (bar.width + bar.spacing), -chart.margins.y + chart.height - d.value * bar.height] + ') ' + 'rotate(' + [(d.angle)] + ')' + 'translate(' + [-bar.width / 2, -d.range / 2] + ')'; });
 }
 window.onload = function () {
     // make the svg
